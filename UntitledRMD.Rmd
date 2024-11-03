@@ -36,3 +36,5 @@ The numerical results confirm a positive correlation in the scatter plot of SIMS
 model.1 <- lm(SIMS~ARM,data=data)
 summary.lm(model.1)
 ```
+
+Based on the inferential results, we derived the equation for the line of best fit: SIMS = 0.054563 * ARM - 4.095160.
