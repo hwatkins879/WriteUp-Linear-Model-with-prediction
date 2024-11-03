@@ -1,15 +1,13 @@
 title: "WriteUp Linear Model with prediction"
-author: "Dana Schroer"
+author: "Hailey Watkins-Oliver"
 date: "2024-04-04"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+require(knitr)
 require(tidyverse)
 require(tigerstats)
-require(knitr)
-
 data <- read.csv(file="https://onlinestatbook.com/case_studies_rvls/physical_strength/data.txt",sep="",header=TRUE)  
 ```
 
@@ -23,169 +21,5 @@ basicNN <- ggplot(data,aes(y=SIMS,x=ARM))
 basicNN + geom_point() + ggtitle("SIMS vs ARM") + theme(plot.title = element_text(hjust = 0.5, size = 20))
 ```
 
-This scatter plot reflects a positive correlation since some of the dots are showing a behavior of going up diagonally. This data shows the simulation expectation of arm strength in the workers. This tells us that it is expected for most of the population to have a strength between 50 to 100 for arm strength. 
-
-### Numerical Results
-
-```{r}
-cor(SIMS~ARM,data=data)
-```
-
-The numerical results confirmed the positive corelation of the scatter plot of SIMS vs ARM.
-The larger the number we get, the larger the correlation between the two is. From this data, we can see that there is a small correspondence between the two since the number is approaching 1. 
-
-### Inferential Results Model 1
-
-```{r}
-model.1 <- lm(SIMS~ARM,data=data)
-summary.lm(model.1)
-```
-
-The equation for the line of this scenario is SIMS=0.054563xARM-4.095160. Since we have a positive coefficient, the line increases making it move from the lower left corner to the upper right corner.
-
-### Create target
-
-```{r}
-target<-data.frame(ARM=88, GRIP=44)
-```
-
-### Predict Target Point of Model 1
-
-```{r}
-predict(model.1,target,interval=c("prediction"))
-```
-
-The table shows that our predicted target plot is 0.7063836 but 95% of the time, we are going to have a value between -1.726209 and 3.138977.
-
-### Scartter plot for Model 1 with linear fit
-
-```{r}
-basicNN <- ggplot(data,aes(y=SIMS,x=ARM))
-
-```
-
-```{r}
-basicNN + geom_point() + ggtitle("SIMS vs ARM") + theme(plot.title = element_text(hjust = 0.5, size = 20)) + geom_smooth(method=lm)
-
-```
-
-The data above shows us the line of best fit from the data points collected from Sims vs Arms. This shows which data points are the closest to the expected results. 
-
-## Model 2 SIMS~GRIP
-### Scarttered Plot
-
-```{r}
-basicNN <- ggplot(data,aes(y=SIMS,x=GRIP))
-
-```
-
-```{r}
-basicNN + geom_point() + ggtitle("SIMS vs GRIP") + theme(plot.title = element_text(hjust = 0.5, size = 20))
-```
-
-This scatter plot tells us the grip strength that workers need. The  plot tells us that most of the population needs to have GRIP strength between 80 and 130.  
-
-### Numerical Results for model 2
-
-```{r}
-cor(SIMS~GRIP,data=data)
-```
-
-This correlation value is lower than the SIMS vs ARM correlation value with was 0.6860073 which tells us that SIMS vs ARM has a better Fit than SIMS vs GRIP.
-For Sims vs Grip we have a value of 0.6398458 but for the Sims vs Arm we got 0.6860073. The value of Sims vs Arms is a higher value than that of Sims vs Grip making the correspondence slightly smaller in the correlation of data tables. This shows us that the Sims vs Arms model is more accurate than the Slims vs Grip model.
-
-### Inferential Results Model 2
-
-```{r}
-model.2 <- lm(SIMS~GRIP,data=data)
-summary.lm(model.2)
-```
-
-The data above gives us an equation of SIMS= 0.045463x GRIP -4.809675 as the equation for our line of best fit. With the positive coefficient we have a positive slope for the line making it start in the bottom left corner and travel towards the top right hand corner. 
-
-### Predict Target Point of Model 2
-
-```{r}
-predict(model.2,target,interval=c("prediction"))
-```
-
-The table shows that our best fit value for this scenario is -2.809304, but 95% of the time the value will be between -5.444714 and -0.1738933 
-
-### Scartter plot for Model 2 with linear fit
-
-```{r}
-basicNN <- ggplot(data,aes(y=SIMS,x=GRIP))
-
-```
-
-```{r}
-basicNN + geom_point() + ggtitle("SIMS vs GRIP") + theme(plot.title = element_text(hjust = 0.5, size = 20)) + geom_smooth(method=lm)
-```
-
-The scatter plot above gives us the line of best fit for the data which allows for us to see which data points are the most accurate in Sims vs Grip. 
-Looking at the scatter plot of SIMS vs ARM and SIMS vs GRIP, we can tell that the data in model 1 plot is more scattered across the ends of the best fit line however on Model 2 scatter plot we have less data point towards the ends of the best fit line.
-
-## Model 3 SIMS~ARM+GRIP
-### Numerical Results
-
-```{r}
-cor(SIMS~ARM+GRIP,data=data)
-```
-
-The correlation value for model three cam out to be higher than model one and two. 
-The value above tells us that we have a 0.7326545 correlation between Sims vs Arm+Grip. This gives us a higher value from the Sims vs Arm and Sims vs Grip. It shows that the most accurate model would be when looking at both the Arm and Grip data together rather than comparing them individually against Sims.
-
-### Inferential Results Model 3
-
-```{r}
-model.3 <- lm(SIMS~ARM+GRIP,data=data)
-summary.lm(model.3)
-```
-
-model.3=(-5.433871+0.037311*ARM+0.024471*GRIP)
-
-This data gives us an equation of SIMS= 0.037311xARM + 0.024470xGRIP -5.433871 for what would be the plane of best fit. 
-
-### Predict Target Point for Model 3
-
-```{r}
-predict(model.3,target,interval=c("prediction"))
-
-```
 
 
-The table above gives us a value of -1.073855 as the target point for Sims vs Arm+Grip. With a 95% interval the value will be between -3.462155 and 1.314444 
-
-### Comparing Models Using anova.
-#### Model 1 vs Model 3
-
-```{r}
-anova(model.1,model.3)
-```
-
-The P-value when comparing Model 1 vs Model 3 is 0.000004994 which is very small. This tells us that Model 3 is better than model 1 as we know that model one is already listed in model 3.
-From the data above, we can see that model.3 was more accurate than model.1. This tells us that if there were to be no differences between the two models, we would have a 0.000004994% chance of this being the outcome. Looking at the data we had 145 degree of freedom for the model.1 and 144 for the model.3. In the residual sum of square values, we have 217.88 errors for model.1 and 188.43 errors for model.3. This shows that the plots for the Arm+Grip was more accurate by 29.45 points.  
-
-### Comparing Models Using anova.
-#### Model 2 vs Model 3
-
-```{r}
-anova(model.2,model.3)
-```
-
-The p-value for this comparison between model 2 and model 3 is 0.000000001495. This value tells us that Arm vs Grip is giving more data than Arm vs Sims. Also this value tells us that Model 3 is much better than Model 2 and model 3 already includes model 2 data. 
-From the data table, we are able to see that in this case model.3 was more accurate than model.2. If there were to be no differences between the two models, we would have a 0.000000001495% chance of getting these exact results. The difference in degrees of freedom is 1 since model.2 had 145 and model.3 had 144. The residual sum of squares for each model is 243.07 for model.2 and 188.43 for model.3. This gives us a difference of 54.639 errors making the model.3 more accurate than the model.2. 
-
-### Comparing Models Using anova.
-#### Model 1 vs Model 2 (Informally)
-
-
-```{r}
-anova(model.1,model.2)
-```
-
-From this data model.1 has a residual sum of squares of 217.88 and model.2 has 243.07. This gave us a difference of -25.189 which shows us that the model.1 is a more accurate model when comparing Sims to Arm and Grip individually.
-
-## Discussion and Conclusion
-The P-value when comparing Model 1 vs Model 3 is 0.000004994 which is very small. This tells us that Model 3 is better than model 1 as we know that model one is already listed in model 3. The p-value for this comparison between model 2 and model 3 is 0.000000001495. This value tells us that Arm vs Grip is giving more data than Arm vs Sims. Also this value tells us that Model 3 is much better than Model 2 and model 3 already includes model 2 data. 
-We learned how to build models, how to edit plot titles, along with the sizing and spacing. We also created models to compare more than one subject at once and analyzed the probability and preciseness of the values that we gathered. These practice examples are going to benefit me by helping me understand how to use these tools and how they can be used in the future for projects to be completed in the future.
