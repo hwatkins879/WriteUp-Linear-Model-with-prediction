@@ -38,3 +38,9 @@ summary.lm(model.1)
 ```
 
 Based on the inferential results, we derived the equation for the line of best fit: SIMS = 0.054563 * ARM - 4.095160.
+
+### Linear Fit Model1
+
+```{r}
+basicNN + geom_point() + ggtitle("SIMS~ARM") + theme(plot.title = element_text(hjust = 0.5, size = 20)) + geom_smooth(method=lm)
+```
